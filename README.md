@@ -62,3 +62,8 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 - Place audio files in `audio/` or adjust `<source src>` paths in `<audio>` tags and `wavesurfer.load()` calls in the JavaScript.
 - Replace the image URL with your own logo or a screenshot featuring the waveform (e.g., similar to the one you shared).
 - Ensure a stable internet connection for CDN-loaded dependencies (Bootstrap and WaveSurfer.js).
+
+## Screenshot
+<p align="center">
+  <img src="http://checkthese.com/img/Screenshotgit001.png?1" alt="Gospel Audio Messages" width="400" height="200">
+</p>
