@@ -64,6 +64,6 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 - Ensure a stable internet connection for CDN-loaded dependencies (Bootstrap and WaveSurfer.js).
 
 ## Screenshot
-<p align="center">
+<p align="left">
   <img src="http://checkthese.com/img/Screenshotgit001.png?1" alt="Gospel Audio Messages" width="600" height="300">
 </p>
