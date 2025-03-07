@@ -74,6 +74,16 @@
             right: 1rem;
             z-index: 1000;
         }
+        
+        
+        /* Adjust position on small screens (e.g., mobile) */
+        @media (max-width: 768px) {
+          .theme-toggle {
+          top: auto; /* Remove top positioning */
+          bottom: 1rem; /* Move to bottom */
+          right: 1rem; /* Keep right alignment */
+        }
+    }
     </style>
 </head>
 <body>
