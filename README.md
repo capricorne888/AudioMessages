@@ -56,7 +56,6 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 ## Acknowledgments
 
 - Built with [Bootstrap 5.3.2](https://getbootstrap.com/).
-- Inspired by sharing gospel messages simply.
 
 
 ### Additional Notes:
