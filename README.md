@@ -4,25 +4,21 @@
 
 # Gospel Audio Messages
 
-
 This repository contains a simple web application for sharing and listening to gospel audio messages. It features a clean, responsive design with a toggleable light/dark theme and downloadable audio files.
-Features
-Responsive Design: Built with Bootstrap, ensuring compatibility across devices.
+## Features
 
-Theme Toggle: Switch between light and dark themes with a single click.
+- **Responsive Design:** Built with Bootstrap, ensuring compatibility across devices.
+- **Theme Toggle:** Switch between light and dark themes with a single click.
+- **Audio Playback:** Embedded audio players for easy listening directly in the browser.
+- **Downloadable Files:** Buttons to download audio messages with error handling.
+- **Custom Styling:** CSS variables for easy theme customization.
+## Installation
 
-Audio Playback: Embedded audio players for easy listening directly in the browser.
-
-Downloadable Files: Buttons to download audio messages with error handling.
-
-Custom Styling: CSS variables for easy theme customization.
-
-Installation
 To use this project locally or deploy it:
-Clone the repository:
-bash
 
-git clone https://github.com/your-username/gospel-audio-messages.git
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/gospel-audio-messages.git
 
 Navigate to the project directory:
 bash
