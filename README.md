@@ -1,7 +1,10 @@
 <p align="center">
   <img src="http://checkthese.com/img/IMG_0160.PNG?3" alt="Gospel Audio Messages" width="200" height="200">
 </p>
+
 # Gospel Audio Messages
+
+
 This repository contains a simple web application for sharing and listening to gospel audio messages. It features a clean, responsive design with a toggleable light/dark theme and downloadable audio files.
 Features
 Responsive Design: Built with Bootstrap, ensuring compatibility across devices.
