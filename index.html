@@ -6,6 +6,8 @@
     <title>Gospel Audio Messages</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- WaveSurfer.js CSS -->
+    <link href="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.css" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
         :root {
@@ -14,7 +16,9 @@
             --card-bg: #2d2d2d;
             --secondary-bg: #343a40;
             --card-title: #ffffff;
-            --navbar-text: #ffffff; /* For dark theme */
+            --navbar-text: #ffffff;
+            --waveform-color: #00b7ff;
+            --waveform-progress: #ff9500;
         }
 
         .light-theme {
@@ -23,7 +27,9 @@
             --card-bg: #f8f9fa;
             --secondary-bg: #e9ecef;
             --card-title: #212529;
-            --navbar-text: #212529; /* For light theme */
+            --navbar-text: #212529;
+            --waveform-color: #007bff;
+            --waveform-progress: #ff6200;
         }
 
         body {
@@ -38,7 +44,7 @@
 
         .navbar-brand,
         .nav-link {
-            color: var(--navbar-text) !important; /* Override Bootstrap defaults */
+            color: var(--navbar-text) !important;
         }
 
         .card {
@@ -53,6 +59,13 @@
         .audio-player {
             width: 100%;
             max-width: 500px;
+        }
+
+        .waveform-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100px;
+            margin-bottom: 1rem;
         }
 
         .theme-toggle {
@@ -102,7 +115,8 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">The Love of God</h5>
-                        <audio controls class="audio-player mb-3">
+                        <div id="waveform1" class="waveform-container"></div>
+                        <audio controls class="audio-player mb-3" id="audio1">
                             <source src="audio/Blindfolded Fools.mp3" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
@@ -120,7 +134,8 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">Peace in Christ</h5>
-                        <audio controls class="audio-player mb-3">
+                        <div id="waveform2" class="waveform-container"></div>
+                        <audio controls class="audio-player mb-3" id="audio2">
                             <source src="audio/Eyes Wide Shut.mp3" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
@@ -138,7 +153,8 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">Salvation Message</h5>
-                        <audio controls class="audio-player mb-3">
+                        <div id="waveform3" class="waveform-container"></div>
+                        <audio controls class="audio-player mb-3" id="audio3">
                             <source src="audio/Nebula Reverie.mp3" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
@@ -153,23 +169,160 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS and Custom Script -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- WaveSurfer.js -->
+    <script src="https://unpkg.com/wavesurfer.js@7"></script>
+    <!-- Custom Script -->
     <script>
+        // Theme Toggle
         function toggleTheme() {
             document.body.classList.toggle('light-theme');
             const btn = document.querySelector('.theme-toggle');
             btn.classList.toggle('btn-outline-light');
             btn.classList.toggle('btn-outline-dark');
+            updateWaveformColors();
         }
 
-        // Download functionality with better error handling
+        // Initialize WaveSurfer instances
+        const wavesurfer1 = WaveSurfer.create({
+            container: '#waveform1',
+            waveColor: getComputedStyle(document.documentElement).getPropertyValue('--waveform-color'),
+            progressColor: getComputedStyle(document.documentElement).getPropertyValue('--waveform-progress'),
+            height: 100,
+            barWidth: 2,
+            cursorWidth: 1,
+            responsive: true,
+            normalize: true,
+            interact: true
+        });
+
+        const wavesurfer2 = WaveSurfer.create({
+            container: '#waveform2',
+            waveColor: getComputedStyle(document.documentElement).getPropertyValue('--waveform-color'),
+            progressColor: getComputedStyle(document.documentElement).getPropertyValue('--waveform-progress'),
+            height: 100,
+            barWidth: 2,
+            cursorWidth: 1,
+            responsive: true,
+            normalize: true,
+            interact: true
+        });
+
+        const wavesurfer3 = WaveSurfer.create({
+            container: '#waveform3',
+            waveColor: getComputedStyle(document.documentElement).getPropertyValue('--waveform-color'),
+            progressColor: getComputedStyle(document.documentElement).getPropertyValue('--waveform-progress'),
+            height: 100,
+            barWidth: 2,
+            cursorWidth: 1,
+            responsive: true,
+            normalize: true,
+            interact: true
+        });
+
+        // Load audio files into WaveSurfer
+        wavesurfer1.load('audio/Blindfolded Fools.mp3');
+        wavesurfer2.load('audio/Eyes Wide Shut.mp3');
+        wavesurfer3.load('audio/Nebula Reverie.mp3');
+
+        // Update waveform colors on theme change
+        function updateWaveformColors() {
+            const waveColor = getComputedStyle(document.documentElement).getPropertyValue('--waveform-color');
+            const progressColor = getComputedStyle(document.documentElement).getPropertyValue('--waveform-progress');
+            wavesurfer1.setOptions({ waveColor, progressColor });
+            wavesurfer2.setOptions({ waveColor, progressColor });
+            wavesurfer3.setOptions({ waveColor, progressColor });
+        }
+
+        // Synchronization function for each audio-waveform pair
+        function setupAudioWaveformSync(wavesurfer, audio) {
+            let isWaveformSeeking = false;
+            let isAudioSeeking = false;
+
+            // Sync native audio to WaveSurfer
+            audio.addEventListener('play', () => {
+                if (!wavesurfer.isPlaying()) {
+                    wavesurfer.play();
+                }
+            });
+
+            audio.addEventListener('pause', () => {
+                if (wavesurfer.isPlaying()) {
+                    wavesurfer.pause();
+                }
+            });
+
+            audio.addEventListener('timeupdate', () => {
+                if (!isAudioSeeking) {
+                    const currentTime = audio.currentTime;
+                    const duration = audio.duration;
+                    if (duration) {
+                        const progress = currentTime / duration;
+                        if (Math.abs(wavesurfer.getCurrentTime() - currentTime) > 0.1) {
+                            isWaveformSeeking = true;
+                            wavesurfer.setTime(currentTime);
+                            isWaveformSeeking = false;
+                        }
+                    }
+                }
+            });
+
+            audio.addEventListener('seeking', () => {
+                isAudioSeeking = true;
+            });
+
+            audio.addEventListener('seeked', () => {
+                isAudioSeeking = false;
+                const currentTime = audio.currentTime;
+                if (Math.abs(wavesurfer.getCurrentTime() - currentTime) > 0.1) {
+                    isWaveformSeeking = true;
+                    wavesurfer.setTime(currentTime);
+                    isWaveformSeeking = false;
+                }
+            });
+
+            // Sync WaveSurfer to native audio
+            wavesurfer.on('play', () => {
+                if (audio.paused) {
+                    audio.play();
+                }
+            });
+
+            wavesurfer.on('pause', () => {
+                if (!audio.paused) {
+                    audio.pause();
+                }
+            });
+
+            wavesurfer.on('seeking', (time) => {
+                if (!isWaveformSeeking) {
+                    isAudioSeeking = true;
+                    audio.currentTime = time;
+                    // Force progress bar update
+                    audio.dispatchEvent(new Event('seeked'));
+                    isAudioSeeking = false;
+                }
+            });
+
+            wavesurfer.on('ready', () => {
+                // Ensure initial sync if audio has a starting position
+                if (audio.currentTime > 0) {
+                    wavesurfer.setTime(audio.currentTime);
+                }
+            });
+        }
+
+        // Set up synchronization for each pair
+        setupAudioWaveformSync(wavesurfer1, document.getElementById('audio1'));
+        setupAudioWaveformSync(wavesurfer2, document.getElementById('audio2'));
+        setupAudioWaveformSync(wavesurfer3, document.getElementById('audio3'));
+
+        // Download functionality
         document.querySelectorAll('.download-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const fileUrl = this.getAttribute('data-file');
                 const fileName = this.getAttribute('data-filename');
-                
-                console.log('Attempting to download:', fileUrl); // Debug log
                 
                 fetch(fileUrl)
                     .then(response => {
@@ -179,7 +332,6 @@
                         return response.blob();
                     })
                     .then(blob => {
-                        console.log('File fetched successfully'); // Debug log
                         const url = window.URL.createObjectURL(blob);
                         const a = document.createElement('a');
                         a.href = url;
