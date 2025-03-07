@@ -66,7 +66,6 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 ## Screenshot
 <p align="left">
   <img src="http://checkthese.com/img/Screenshotgit001.png?1" alt="Gospel Audio Messages" width="400" height="200">
-  <img src="http://checkthese.com/img/screenshot_git005.jpg?1" alt="Gospel Audio Messages" width="400" height="200">
 <br>
   <img src="http://checkthese.com/img/screenshot_git003.jpg?1" alt="Gospel Audio Messages" width="300" height="600">
   <img src="http://checkthese.com/img/screenshot_git004.jpg?1" alt="Gospel Audio Messages" width="300" height="600">
