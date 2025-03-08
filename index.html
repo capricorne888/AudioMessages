@@ -75,15 +75,14 @@
             z-index: 1000;
         }
         
-        
         /* Adjust position on small screens (e.g., mobile) */
         @media (max-width: 1500px) {
-          .theme-toggle {
-          top: auto; /* Remove top positioning */
-          bottom: 1rem; /* Move to bottom */
-          right: 1rem; /* Keep right alignment */
+            .theme-toggle {
+                top: auto; /* Remove top positioning */
+                bottom: 1rem; /* Move to bottom */
+                right: 1rem; /* Keep right alignment */
+            }
         }
-    }
     </style>
 </head>
 <body>
@@ -194,7 +193,12 @@
             updateWaveformColors();
         }
 
-        // Initialize WaveSurfer instances
+        // Get references to the audio elements
+        const audio1 = document.getElementById('audio1');
+        const audio2 = document.getElementById('audio2');
+        const audio3 = document.getElementById('audio3');
+
+        // Initialize WaveSurfer instances, using the native audio elements
         const wavesurfer1 = WaveSurfer.create({
             container: '#waveform1',
             waveColor: getComputedStyle(document.documentElement).getPropertyValue('--waveform-color'),
@@ -204,7 +208,8 @@
             cursorWidth: 1,
             responsive: true,
             normalize: true,
-            interact: true
+            interact: true,
+            media: audio1 // Use the native audio element
         });
 
         const wavesurfer2 = WaveSurfer.create({
@@ -216,7 +221,8 @@
             cursorWidth: 1,
             responsive: true,
             normalize: true,
-            interact: true
+            interact: true,
+            media: audio2
         });
 
         const wavesurfer3 = WaveSurfer.create({
@@ -228,13 +234,9 @@
             cursorWidth: 1,
             responsive: true,
             normalize: true,
-            interact: true
+            interact: true,
+            media: audio3
         });
-
-        // Load audio files into WaveSurfer
-        wavesurfer1.load('audio/Blindfolded Fools.mp3');
-        wavesurfer2.load('audio/Eyes Wide Shut.mp3');
-        wavesurfer3.load('audio/Nebula Reverie.mp3');
 
         // Update waveform colors on theme change
         function updateWaveformColors() {
@@ -244,89 +246,6 @@
             wavesurfer2.setOptions({ waveColor, progressColor });
             wavesurfer3.setOptions({ waveColor, progressColor });
         }
-
-        // Synchronization function for each audio-waveform pair
-        function setupAudioWaveformSync(wavesurfer, audio) {
-            let isWaveformSeeking = false;
-            let isAudioSeeking = false;
-
-            // Sync native audio to WaveSurfer
-            audio.addEventListener('play', () => {
-                if (!wavesurfer.isPlaying()) {
-                    wavesurfer.play();
-                }
-            });
-
-            audio.addEventListener('pause', () => {
-                if (wavesurfer.isPlaying()) {
-                    wavesurfer.pause();
-                }
-            });
-
-            audio.addEventListener('timeupdate', () => {
-                if (!isAudioSeeking) {
-                    const currentTime = audio.currentTime;
-                    const duration = audio.duration;
-                    if (duration) {
-                        const progress = currentTime / duration;
-                        if (Math.abs(wavesurfer.getCurrentTime() - currentTime) > 0.1) {
-                            isWaveformSeeking = true;
-                            wavesurfer.setTime(currentTime);
-                            isWaveformSeeking = false;
-                        }
-                    }
-                }
-            });
-
-            audio.addEventListener('seeking', () => {
-                isAudioSeeking = true;
-            });
-
-            audio.addEventListener('seeked', () => {
-                isAudioSeeking = false;
-                const currentTime = audio.currentTime;
-                if (Math.abs(wavesurfer.getCurrentTime() - currentTime) > 0.1) {
-                    isWaveformSeeking = true;
-                    wavesurfer.setTime(currentTime);
-                    isWaveformSeeking = false;
-                }
-            });
-
-            // Sync WaveSurfer to native audio
-            wavesurfer.on('play', () => {
-                if (audio.paused) {
-                    audio.play();
-                }
-            });
-
-            wavesurfer.on('pause', () => {
-                if (!audio.paused) {
-                    audio.pause();
-                }
-            });
-
-            wavesurfer.on('seeking', (time) => {
-                if (!isWaveformSeeking) {
-                    isAudioSeeking = true;
-                    audio.currentTime = time;
-                    // Force progress bar update
-                    audio.dispatchEvent(new Event('seeked'));
-                    isAudioSeeking = false;
-                }
-            });
-
-            wavesurfer.on('ready', () => {
-                // Ensure initial sync if audio has a starting position
-                if (audio.currentTime > 0) {
-                    wavesurfer.setTime(audio.currentTime);
-                }
-            });
-        }
-
-        // Set up synchronization for each pair
-        setupAudioWaveformSync(wavesurfer1, document.getElementById('audio1'));
-        setupAudioWaveformSync(wavesurfer2, document.getElementById('audio2'));
-        setupAudioWaveformSync(wavesurfer3, document.getElementById('audio3'));
 
         // Download functionality
         document.querySelectorAll('.download-btn').forEach(button => {
